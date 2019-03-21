@@ -31,6 +31,7 @@ class Chat extends React.Component {
     return {
       name: this.props.navigation.state.params.name,
       _id: Fire.shared.uid
+      // _idChannel:
     };
   }
 

@@ -39,6 +39,18 @@ class Fire {
     return firebase.database().ref("messages");
   }
 
+  // retourne de la route channel dans la db
+  get refChannel() {
+    return firebase.database().ref("channel");
+  }
+
+  // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
+  // message ajouté on le récupère et on le passe a la methode parse
+  onChannel = callback =>
+    this.refChannel
+      .limitToLast(20)
+      .on("child_added", snapshot => callback(this.parseChannel(snapshot)));
+
   // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
   // message ajouté on le récupère et on le passe a la methode parse
   on = callback =>
@@ -62,6 +74,23 @@ class Fire {
       user
     };
     return message;
+  };
+
+  parseChannel = snapshot => {
+    // recupere les valeurs du snapshot contenant le nouveau message
+    // pour les mettres dans le format de giftedchat
+    const { timestamp: numberStamp, name, user } = snapshot.val();
+    const { key: _id } = snapshot;
+
+    const timestamp = new Date(numberStamp);
+    // message dans le format de giftedchat
+    const channel = {
+      _id,
+      timestamp,
+      name,
+      user
+    };
+    return channel;
   };
 
   // Se deconnecté de la db
@@ -96,8 +125,26 @@ class Fire {
     }
   };
 
+  // loop sur un tableau de channels
+  // on les mets au bon format
+  // on les push sur le serveur
+  sendChannel = channel => {
+    const name = channel.name;
+    const user = channel.user;
+
+    const newChannel = {
+      name,
+      user,
+      timestamp: this.timestamp
+    };
+    this.appendChannel(newChannel);
+  };
+
   // ajout de message dans la db
   append = message => this.ref.push(message);
+
+  // ajout de message dans la db
+  appendChannel = channel => this.refChannel.push(channel);
 }
 
 Fire.shared = new Fire();
