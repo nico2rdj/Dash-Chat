@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import { connect } from "react-redux";
 class Fire {
   constructor() {
     this.init();
@@ -27,11 +28,64 @@ class Fire {
     if (!user) {
       try {
         // si on était pas connecté nous connecte en mode anonyme
-        firebase.auth().signInAnonymously();
+        //firebase.auth().signInAnonymously();
+        console.log("pas connecté");
       } catch ({ message }) {
         alert(message);
       }
+      return null;
+    } else {
+      return user;
     }
+  };
+
+  get isConnected() {
+    var status = false;
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log("connecté !");
+        status = true;
+      } else {
+        console.log("pas connecté !");
+      }
+    });
+    return status;
+  }
+
+  // inscription
+  onRegister = (email, password) => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(user => {
+        // If you need to do anything with the user, do it here
+        // The user will be logged in automatically by the
+        // `onAuthStateChanged` listener we set up in App.js earlier
+      })
+      .catch(error => {
+        const { code, message } = error;
+        console.log(message);
+        console.log(code);
+        console.log(password);
+        // For details of error codes, see the docs
+        // The message contains the default Firebase string
+        // representation of the error
+      });
+  };
+
+  // connexion
+  onLogin = (email, password) => {
+    Fire.shared.authRef
+      .signInWithEmailAndPassword(email, password)
+      .then(user => {})
+      .catch(error => {
+        const { code, message } = error;
+        console.log(message);
+        console.log(code);
+        // For details of error codes, see the docs
+        // The message contains the default Firebase string
+        // representation of the error
+      });
   };
 
   // retourne de la route messages dans la db
@@ -156,4 +210,5 @@ class Fire {
 }
 
 Fire.shared = new Fire();
+
 export default Fire;

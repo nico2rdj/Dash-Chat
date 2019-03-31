@@ -9,11 +9,12 @@ export default (state = initialState, action) => {
   let nextState;
   switch (action.type) {
     case FETCH_USER:
-      if (action.payload) {
+      console.log(action.value);
+      if (action.value) {
         nextState = {
           ...state,
-          isAuthenticated: true,
-          currentUser: action.payload
+          isAuthenticated: true
+          //currentUser: action.payload
         };
       }
       return nextState || state;

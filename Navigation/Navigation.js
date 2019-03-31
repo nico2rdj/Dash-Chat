@@ -18,7 +18,7 @@ import SignUp from "../components/SignUpComponent";
 
 // Create the navigator
 
-export const SignedIn = createStackNavigator({
+export const Signed = createStackNavigator({
   Main: { screen: Main },
   Chat: { screen: Chat }
 });
