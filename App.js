@@ -6,6 +6,7 @@ import Store from "./Store/configureStore";
 export default class App extends React.Component {
   render() {
     const Layout = createRootNavigator();
+    console.log(this.props);
     return (
       <Provider store={Store}>
         <Layout />

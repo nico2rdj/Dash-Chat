@@ -93,6 +93,10 @@ class Fire {
     return firebase.database().ref("messages");
   }
 
+  get idChannel() {
+    return this.state.idChannel;
+  }
+
   // retourne de la route channel dans la db
   get refChannel() {
     return firebase.database().ref("channel");
@@ -117,6 +121,7 @@ class Fire {
   // message ajouté on le récupère et on le passe a la methode parse
   on = callback =>
     this.ref
+
       .limitToLast(20)
       .on("child_added", snapshot => callback(this.parse(snapshot)));
 
@@ -173,7 +178,24 @@ class Fire {
   // loop sur un tableau de messages
   // on les mets au bon format
   // on les push sur le serveur
-  send = messages => {
+  send = (idChannel, messages) => {
+    for (let i = 0; i < messages.length; i++) {
+      const { text, user } = messages[i];
+
+      console.log(idChannel);
+
+      // 4.
+      const message = {
+        text,
+        user,
+        timestamp: this.timestamp,
+        channelId: idChannel
+      };
+      this.append(message);
+    }
+  };
+
+  sendMessageChannel = (idChannel, messages) => {
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
 
@@ -183,9 +205,18 @@ class Fire {
         user,
         timestamp: this.timestamp
       };
-      this.append(message);
+
+      this.appendMessageChannel(message, idChannel);
     }
   };
+
+  // ajout de message dans la db
+  appendMessageChannel = (message, idChannel) =>
+    firebase
+      .database()
+      .ref("channel/" + idChannel + "/messages")
+
+      .push(message);
 
   // loop sur un tableau de channels
   // on les mets au bon format
@@ -197,7 +228,8 @@ class Fire {
     const newChannel = {
       name,
       user,
-      timestamp: this.timestamp
+      timestamp: this.timestamp,
+      messages: []
     };
     this.appendChannel(newChannel);
   };
@@ -206,7 +238,11 @@ class Fire {
   append = message => this.ref.push(message);
 
   // ajout de message dans la db
-  appendChannel = channel => this.refChannel.push(channel);
+  appendChannel = channel => {
+    var newChannel = this.refChannel.push(channel).then(() => {
+      return newChannel.name();
+    });
+  };
 }
 
 Fire.shared = new Fire();

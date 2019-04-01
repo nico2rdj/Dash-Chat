@@ -33,6 +33,7 @@ class Signin extends React.Component {
         const action = { type: "FETCH_USER", value: "Fire.shared.isConnected" };
         this.props.dispatch(action);
         console.log("success");
+        this.props.navigation.navigate("SignedIn");
       })
       .catch(error => {
         const { code, message } = error;

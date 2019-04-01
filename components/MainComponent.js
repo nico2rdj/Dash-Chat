@@ -5,9 +5,13 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ScrollView,
+  ActivityIndicator,
+  Button
 } from "react-native";
 import Fire from "../Fire";
+import { List, ListItem, SearchBar } from "react-native-elements";
 
 class Main extends Component {
   constructor(props) {
@@ -31,6 +35,19 @@ class Main extends Component {
 
   onChangeText = name => this.setState({ name });
 
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: "14%"
+        }}
+      />
+    );
+  };
+
   // on let sur écoute le serveur dès qu'il y a un changement
   // on réactualise le store de message
   componentDidMount() {
@@ -52,9 +69,26 @@ class Main extends Component {
     Fire.shared.sendChannel(channel);
   };
 
+  renderHeader = () => {
+    return <SearchBar placeholder="Rechercher un cannal..." lightTheme round />;
+  };
+
+  renderFooter = () => {
+    if (!this.state.loading) return null;
+
+    return (
+      <View>
+        <TouchableOpacity onPress={this.onPress}>
+          <Text style={styles.buttonText}>Rechercher</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   render() {
     return (
       <View>
+        {/*
         <Text style={styles.title}>Rentrez le nom d'un canal</Text>
         <TextInput
           onChangeText={this.onChangeText}
@@ -62,6 +96,7 @@ class Main extends Component {
           placeholder="Creed"
           value={this.state.name}
         />
+        *
 
         <TouchableOpacity onPress={this.onPressChannel}>
           <Text style={styles.buttonText}>Créer un channel</Text>
@@ -69,7 +104,25 @@ class Main extends Component {
 
         {/* for loop maps channel  */}
 
-        {/*allChannels*/}
+        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+          <FlatList
+            data={this.state.channels}
+            renderItem={({ item }) => (
+              <ListItem
+                title={`${item._id}`}
+                subtitle={"haha"}
+                button
+                onPress={() => {
+                  this.onPress(item._id);
+                }}
+              />
+            )}
+            keyExtractor={item => item._id}
+            ItemSeparatorComponent={this.renderSeparator}
+            ListHeaderComponent={this.renderHeader}
+            //ListFooterComponent={this.renderFooter}
+          />
+        </List>
 
         <TouchableOpacity onPress={this.onPress}>
           <Text style={styles.buttonText}>Rechercher</Text>

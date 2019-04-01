@@ -8,17 +8,21 @@ class Chat extends React.Component {
     title: (navigation.state.params || {}).name || "Chat !"
   });
   state = {
-    messages: []
+    messages: [],
+    idChannel: ""
   };
 
   // on let sur écoute le serveur dès qu'il y a un changement
   // on réactualise le store de message
-  componentDidMount() {
+  componentWillMount() {
     Fire.shared.on(message =>
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message)
       }))
     );
+    this.setState({
+      idChannel: this.props.navigation.state.params.idChannel
+    });
   }
 
   // quand on quitte le channel on coupe l'écoute
@@ -30,8 +34,8 @@ class Chat extends React.Component {
     // Return our name and our UID for GiftedChat to parse
     return {
       name: this.props.navigation.state.params.name,
-      _id: Fire.shared.uid
-      // _idChannel:
+      _id: Fire.shared.uid,
+      _idChannel: this.props.navigation.state.params.idChannel
     };
   }
 
@@ -39,7 +43,9 @@ class Chat extends React.Component {
     return (
       <GiftedChat
         messages={this.state.messages}
-        onSend={Fire.shared.send}
+        onSend={messages =>
+          Fire.shared.sendMessageChannel(this.state.idChannel, messages)
+        }
         user={this.user}
       />
     );

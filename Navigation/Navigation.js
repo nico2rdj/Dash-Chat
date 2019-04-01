@@ -23,6 +23,11 @@ export const Signed = createStackNavigator({
   Chat: { screen: Chat }
 });
 
+export const SignedOut = createStackNavigator({
+  SignIn: { screen: SignIn },
+  SignUp: { screen: SignUp }
+});
+
 /*
 export const SignedOut = createStackNavigator({
   SignUp: {
@@ -41,23 +46,23 @@ export const SignedOut = createStackNavigator({
 */
 
 export const createRootNavigator = (signedIn = false) => {
-  return createTabNavigator(
+  return createSwitchNavigator(
     {
       SignedIn: {
-        screen: SignIn,
+        screen: Signed,
         navigationOptions: {
-          title: "Connexion"
+          title: "Connecté"
         }
       },
-      SignedUp: {
-        screen: SignUp,
+      SignedOut: {
+        screen: SignedOut,
         navigationOptions: {
-          title: "Inscription"
+          title: "Déconnecté"
         }
       }
     },
     {
-      initialRouteName: signedIn ? "SignedIn" : "SignedUp"
+      initialRouteName: signedIn ? "SignedIn" : "SignedOut"
     }
   );
 };
