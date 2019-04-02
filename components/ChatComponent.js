@@ -9,12 +9,13 @@ class Chat extends React.Component {
   });
   state = {
     messages: [],
-    idChannel: ""
+    idChannel: "",
+    isLoadingEarlier: false
   };
 
   // on let sur écoute le serveur dès qu'il y a un changement
   // on réactualise le store de message
-  componentWillMount() {
+  componentDidMount() {
     this.setState(
       {
         idChannel: this.props.navigation.state.params.idChannel
@@ -28,6 +29,20 @@ class Chat extends React.Component {
       }
     );
   }
+
+  onLoadEarlier = () => {
+    this.setState(previousState => {
+      return {
+        isLoadingEarlier: true
+      };
+    });
+    console.log(this.state.isLoadingEarlier);
+    this.setState(previousState => {
+      return {
+        isLoadingEarlier: false
+      };
+    });
+  };
 
   // quand on quitte le channel on coupe l'écoute
   componentWillUnmount() {
@@ -46,6 +61,9 @@ class Chat extends React.Component {
   render() {
     return (
       <GiftedChat
+        loadEarlier={true}
+        onLoadEarlier={this.onLoadEarlier}
+        isLoadingEarlier={this.state.isLoadingEarlier}
         messages={this.state.messages}
         onSend={messages =>
           Fire.shared.sendMessageChannel(this.state.idChannel, messages)

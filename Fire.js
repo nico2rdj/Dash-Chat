@@ -53,15 +53,20 @@ class Fire {
   }
 
   // inscription
-  onRegister = (email, password) => {
+  onRegister = (email, password, pseudo) => {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(user => {
-        // If you need to do anything with the user, do it here
-        // The user will be logged in automatically by the
-        // `onAuthStateChanged` listener we set up in App.js earlier
+        const newUser = {
+          pseudo: pseudo,
+          email: email,
+          password: password,
+          id: Fire.shared.uid
+        };
+        Fire.shared.refUser.push(newUser);
       })
+
       .catch(error => {
         const { code, message } = error;
         console.log(message);
@@ -88,13 +93,26 @@ class Fire {
       });
   };
 
-  onAnonymously = () => {
-    firebase.auth().signInAnonymously();
+  /*
+  onAnonymously = pseudo => {
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(user => {
+        const user = {
+          pseudo: pseudo
+        };
+        this.refUser.push(user);
+      });
   };
-
+*/
   // retourne de la route messages dans la db
   get ref() {
     return firebase.database().ref("messages");
+  }
+
+  get refUser() {
+    return firebase.database().ref("users");
   }
 
   get idChannel() {
@@ -183,6 +201,10 @@ class Fire {
     return (firebase.auth().currentUser || {}).uid;
   }
 
+  get email() {
+    return (firebase.auth().currentUser || {}).email;
+  }
+
   // recupere l'heure sur le serveur
   get timestamp() {
     return firebase.database.ServerValue.TIMESTAMP;
@@ -236,10 +258,12 @@ class Fire {
   sendChannel = channel => {
     const name = channel.name;
     const user = channel.user;
+    const email = channel.mail;
 
     const newChannel = {
       name,
       user,
+      email,
       timestamp: this.timestamp,
       messages: []
     };

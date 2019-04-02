@@ -76,12 +76,13 @@ class Main extends Component {
   onPressChannel = () => {
     var channel = {
       name: this.state.name,
-      user: Fire.shared.uid
+      user: Fire.shared.uid,
+      mail: Fire.shared.email
     };
     Fire.shared.sendChannel(channel);
     Alert.alert(
       "Nouveau cannal",
-      this.state.name,
+      Fire.shared.email,
       [{ text: "OK", onPress: () => console.log("OK Pressed") }],
       { cancelable: false }
     );
@@ -156,7 +157,7 @@ class Main extends Component {
             renderItem={({ item }) => (
               <ListItem
                 title={`${item.name}`}
-                subtitle={"Créateur : " + `${item.name}`}
+                subtitle={"Créateur : " + `${item.mail}`}
                 button
                 onPress={() => {
                   this.onPress(item._id);
