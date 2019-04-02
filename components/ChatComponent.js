@@ -10,7 +10,8 @@ class Chat extends React.Component {
   state = {
     messages: [],
     idChannel: "",
-    isLoadingEarlier: false
+    isLoadingEarlier: false,
+    size: 5
   };
 
   // on let sur écoute le serveur dès qu'il y a un changement
@@ -21,16 +22,38 @@ class Chat extends React.Component {
         idChannel: this.props.navigation.state.params.idChannel
       },
       () => {
-        Fire.shared.onMessages(this.state.idChannel, message =>
-          this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, message)
-          }))
+        Fire.shared.onMessagesRefresh(
+          this.state.idChannel,
+          message =>
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, message)
+            })),
+          this.state.size
         );
       }
     );
   }
 
   onLoadEarlier = () => {
+    console.log("chargement");
+
+    this.setState(
+      {
+        size: this.state.size + 5,
+        messages: []
+      },
+      () => {
+        Fire.shared.onMessagesRefresh(
+          this.state.idChannel,
+          message =>
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, message)
+            })),
+          this.state.size
+        );
+      }
+    );
+
     this.setState(previousState => {
       return {
         isLoadingEarlier: true

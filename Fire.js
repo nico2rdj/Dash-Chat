@@ -153,8 +153,19 @@ class Fire {
     firebase
       .database()
       .ref("channel/" + idChannel + "/messages")
-      .limitToLast(20)
+      .limitToLast(5)
       .on("child_added", snapshot => callback(this.parse(snapshot)));
+
+  // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
+  // message ajouté on le récupère et on le passe a la methode parse
+  onMessagesRefresh = (idChannel, callback, size) => {
+    console.log("ici !");
+    firebase
+      .database()
+      .ref("channel/" + idChannel + "/messages")
+      .limitToLast(size)
+      .on("child_added", snapshot => callback(this.parse(snapshot)));
+  };
 
   // traitement du nouveau message
   parse = snapshot => {
