@@ -70,7 +70,32 @@ class Main extends Component {
   };
 
   renderHeader = () => {
-    return <SearchBar placeholder="Rechercher un cannal..." lightTheme round />;
+    return (
+      <View>
+        <SearchBar placeholder="Rechercher un cannal..." lightTheme round />
+        <View style={styles.row}>
+          <View style={styles.inputWrap}>
+            <TextInput
+              style={{
+                height: 35,
+                borderColor: "gray",
+                backgroundColor: "#F8F8FF"
+              }}
+              onChangeText={text => this.setState({ name: text })}
+              value={this.state.text}
+              placeholder="Nom de votre channel"
+            />
+          </View>
+          <View style={styles.inputWrap}>
+            <Button
+              onPress={this.onPressChannel}
+              title="Créer un channel"
+              color="#20B2AA"
+            />
+          </View>
+        </View>
+      </View>
+    );
   };
 
   renderFooter = () => {
@@ -87,7 +112,7 @@ class Main extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         {/*
         <Text style={styles.title}>Rentrez le nom d'un canal</Text>
         <TextInput
@@ -109,7 +134,7 @@ class Main extends Component {
             data={this.state.channels}
             renderItem={({ item }) => (
               <ListItem
-                title={`${item._id}`}
+                title={`${item.name}`}
                 subtitle={"haha"}
                 button
                 onPress={() => {
@@ -120,6 +145,7 @@ class Main extends Component {
             keyExtractor={item => item._id}
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
+            stickyHeaderIndices={[0]}
             //ListFooterComponent={this.renderFooter}
           />
         </List>
@@ -154,6 +180,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: offset,
     borderColor: "#111111",
     borderWidth: 1
+  },
+
+  row: {
+    flex: 1,
+    flexDirection: "row"
+  },
+  inputWrap: {
+    flex: 1,
+    borderColor: "#cccccc",
+    borderBottomWidth: 1,
+    marginBottom: 10
+  },
+  inputdate: {
+    fontSize: 14,
+    marginBottom: -12,
+    color: "#6a4595"
+  },
+  inputcvv: {
+    fontSize: 14,
+    marginBottom: -12,
+    color: "#6a4595"
   }
 });
 

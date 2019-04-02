@@ -15,14 +15,18 @@ class Chat extends React.Component {
   // on let sur écoute le serveur dès qu'il y a un changement
   // on réactualise le store de message
   componentWillMount() {
-    Fire.shared.on(message =>
-      this.setState(previousState => ({
-        messages: GiftedChat.append(previousState.messages, message)
-      }))
+    this.setState(
+      {
+        idChannel: this.props.navigation.state.params.idChannel
+      },
+      () => {
+        Fire.shared.onMessages(this.state.idChannel, message =>
+          this.setState(previousState => ({
+            messages: GiftedChat.append(previousState.messages, message)
+          }))
+        );
+      }
     );
-    this.setState({
-      idChannel: this.props.navigation.state.params.idChannel
-    });
   }
 
   // quand on quitte le channel on coupe l'écoute
