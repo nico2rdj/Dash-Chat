@@ -76,6 +76,22 @@ class Signin extends React.Component {
             }}
           />
         </Card>
+        <View style={{ justifyContent: "center" }}>
+          <Card>
+            <FormLabel>Continuer en mode anonyme</FormLabel>
+
+            <Button
+              buttonStyle={{ marginTop: 20 }}
+              backgroundColor="black"
+              title="ANONYME"
+              onPress={() => {
+                Fire.shared.onAnonymously();
+
+                // .then(() => { navigation.navigate("SignedIn"); });
+              }}
+            />
+          </Card>
+        </View>
       </View>
     );
   }

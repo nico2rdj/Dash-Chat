@@ -88,6 +88,10 @@ class Fire {
       });
   };
 
+  onAnonymously = () => {
+    firebase.auth().signInAnonymously();
+  };
+
   // retourne de la route messages dans la db
   get ref() {
     return firebase.database().ref("messages");

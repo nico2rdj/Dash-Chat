@@ -8,10 +8,22 @@ import {
   FlatList,
   ScrollView,
   ActivityIndicator,
-  Button
+  Button,
+  Alert,
+  YellowBox
 } from "react-native";
 import Fire from "../Fire";
 import { List, ListItem, SearchBar } from "react-native-elements";
+
+import _ from "lodash";
+
+YellowBox.ignoreWarnings(["Setting a timer"]);
+const _console = _.clone(console);
+console.warn = message => {
+  if (message.indexOf("Setting a timer") <= -1) {
+    _console.warn(message);
+  }
+};
 
 class Main extends Component {
   constructor(props) {
@@ -67,6 +79,12 @@ class Main extends Component {
       user: Fire.shared.uid
     };
     Fire.shared.sendChannel(channel);
+    Alert.alert(
+      "Nouveau cannal",
+      this.state.name,
+      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      { cancelable: false }
+    );
   };
 
   renderHeader = () => {
@@ -79,7 +97,9 @@ class Main extends Component {
               style={{
                 height: 35,
                 borderColor: "gray",
-                backgroundColor: "#F8F8FF"
+                backgroundColor: "#F8F8FF",
+                marginLeft: 10,
+                borderRadius: 0
               }}
               onChangeText={text => this.setState({ name: text })}
               value={this.state.text}
@@ -91,6 +111,7 @@ class Main extends Component {
               onPress={this.onPressChannel}
               title="Créer un channel"
               color="#20B2AA"
+              style={{ borderRadius: "0" }}
             />
           </View>
         </View>
@@ -135,7 +156,7 @@ class Main extends Component {
             renderItem={({ item }) => (
               <ListItem
                 title={`${item.name}`}
-                subtitle={"haha"}
+                subtitle={"Créateur : " + `${item.name}`}
                 button
                 onPress={() => {
                   this.onPress(item._id);
@@ -190,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderColor: "#cccccc",
     borderBottomWidth: 1,
-    marginBottom: 10
+    borderRadius: 0
   },
   inputdate: {
     fontSize: 14,

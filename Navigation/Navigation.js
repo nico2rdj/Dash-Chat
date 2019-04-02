@@ -8,7 +8,8 @@ import Chat from "../components/ChatComponent";
 import {
   createStackNavigator,
   createSwitchNavigator,
-  createTabNavigator
+  createTabNavigator,
+  createBottomTabNavigator
 } from "react-navigation";
 
 import { fetchUser } from "../Store/actions";
@@ -23,10 +24,35 @@ export const Signed = createStackNavigator({
   Chat: { screen: Chat }
 });
 
-export const SignedOut = createStackNavigator({
-  SignIn: { screen: SignIn },
-  SignUp: { screen: SignUp }
-});
+export const SignedOut = createBottomTabNavigator(
+  {
+    SignIn: {
+      screen: SignIn,
+      navigationOptions: {
+        title: "Connexion"
+      }
+    },
+    SignUp: {
+      screen: SignUp,
+      navigationOptions: {
+        title: "Inscription"
+      }
+    }
+  },
+  {
+    tabBarOptions: {
+      activeTintColor: "white",
+      labelStyle: {
+        fontSize: 18,
+        textAlign: "center",
+        marginBottom: 15
+      },
+      style: {
+        backgroundColor: "black"
+      }
+    }
+  }
+);
 
 /*
 export const SignedOut = createStackNavigator({
