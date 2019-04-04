@@ -143,7 +143,6 @@ class Fire {
   // message ajouté on le récupère et on le passe a la methode parse
   on = callback =>
     this.ref
-
       .limitToLast(20)
       .on("child_added", snapshot => callback(this.parse(snapshot)));
 
@@ -189,6 +188,7 @@ class Fire {
         return pseudo;
       });
     */
+
     firebase
       .database()
       .ref("users")

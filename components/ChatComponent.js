@@ -7,13 +7,17 @@ class Chat extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || "Chat !"
   });
-  state = {
-    messages: [],
-    idChannel: "",
-    isLoadingEarlier: false,
-    size: 10
-  };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: [],
+      idChannel: "",
+      isLoadingEarlier: false,
+      size: 10,
+      pseudo: ""
+    };
+  }
   // on let sur écoute le serveur dès qu'il y a un changement
   // on réactualise le store de message
   componentDidMount() {
@@ -32,6 +36,20 @@ class Chat extends React.Component {
         );
       }
     );
+    Fire.shared.getUser(Fire.shared.uid, user => {
+      this.setState(
+        {
+          user: user
+        },
+        () => {
+          var pseudo = JSON.stringify(this.state.user["pseudo"]);
+          pseudo = pseudo.substring(1, pseudo.length - 1);
+          this.setState({
+            pseudo: pseudo
+          });
+        }
+      );
+    });
   }
 
   onLoadEarlier = () => {
@@ -75,9 +93,9 @@ class Chat extends React.Component {
   get user() {
     // Return our name and our UID for GiftedChat to parse
     return {
-      name: this.props.navigation.state.params.name,
-      _id: Fire.shared.uid,
-      _idChannel: this.props.navigation.state.params.idChannel
+      name: this.state.pseudo,
+      _id: Fire.shared.uid
+      //_idChannel: this.props.navigation.state.params.idChannel
     };
   }
 

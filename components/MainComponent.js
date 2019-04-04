@@ -42,7 +42,8 @@ class Main extends Component {
     this.state.idChannel = id;
     this.props.navigation.navigate("Chat", {
       name: this.state.name,
-      idChannel: this.state.idChannel
+      idChannel: this.state.idChannel,
+      user: this.state.user
     });
   };
 
@@ -90,6 +91,7 @@ class Main extends Component {
 
   onPressChannel = () => {
     var pseudo = JSON.stringify(this.state.user["pseudo"]);
+    pseudo = pseudo.substring(1, pseudo.length - 1);
     console.log("pseudo:::::: ", pseudo);
     var channel = {
       name: this.state.name,
