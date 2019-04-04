@@ -31,7 +31,8 @@ class Main extends Component {
     this.state = {
       name: "",
       idChannel: "",
-      channels: []
+      channels: [],
+      user: null
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.onPress = this.onPress.bind(this);
@@ -67,18 +68,35 @@ class Main extends Component {
       this.setState({
         channels: [...this.state.channels, channel]
       });
-      console.log(channel);
-      console.log(this.state.channels);
     });
-    console.log(this.state.channels);
+
+    Fire.shared.getUser(Fire.shared.uid, user => {
+      this.setState(
+        {
+          user: user
+        },
+        () => {
+          console.log("main", this.state.user);
+        }
+      );
+    });
+
+    //console.log("pseudo: " + this.state.user.values());
+  }
+
+  componentDidUpdate() {
+    if (this.state.user) console.log("main", this.state.user["pseudo"]);
   }
 
   onPressChannel = () => {
+    var pseudo = JSON.stringify(this.state.user["pseudo"]);
+    console.log("pseudo:::::: ", pseudo);
     var channel = {
       name: this.state.name,
       user: Fire.shared.uid,
-      mail: Fire.shared.email
+      pseudo: pseudo
     };
+
     Fire.shared.sendChannel(channel);
     Alert.alert(
       "Nouveau cannal",
@@ -157,7 +175,12 @@ class Main extends Component {
             renderItem={({ item }) => (
               <ListItem
                 title={`${item.name}`}
-                subtitle={"Créateur : " + `${item.mail}`}
+                subtitle={
+                  "Créateur : " +
+                  `${item.pseudo}` +
+                  "\n Crée le " +
+                  `${item.timestamp}`
+                }
                 button
                 onPress={() => {
                   this.onPress(item._id);

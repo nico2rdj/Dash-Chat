@@ -18,12 +18,12 @@ class Signin extends React.Component {
 
   componentDidMount() {
     console.log("componentDidUpdate : ");
-    console.log(this.props);
+    //console.log(this.props);
     //this.props.fetchUser();
   }
 
   componentDidUpdate() {
-    console.log(this.props);
+    //console.log(this.props);
     //this.props.fetchUser();
   }
 

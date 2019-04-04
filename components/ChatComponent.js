@@ -11,7 +11,7 @@ class Chat extends React.Component {
     messages: [],
     idChannel: "",
     isLoadingEarlier: false,
-    size: 5
+    size: 10
   };
 
   // on let sur écoute le serveur dès qu'il y a un changement

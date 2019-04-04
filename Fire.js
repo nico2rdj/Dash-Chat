@@ -167,6 +167,63 @@ class Fire {
       .on("child_added", snapshot => callback(this.parse(snapshot)));
   };
 
+  getUser = (idUser, callback) => {
+    /*
+    firebase
+      .database()
+      .ref("users")
+      .orderByChild("id")
+      .equalTo(idUser)
+      .on("value", function(snapshot) {
+        console.log(snapshot.val);
+        var pseudo = "";
+        snapshot.forEach(function(data) {
+          data.forEach(function(val) {
+            if (val.key === "pseudo") {
+              console.log(val);
+              pseudo = val;
+              console.log(pseudo);
+            }
+          });
+        });
+        return pseudo;
+      });
+    */
+    firebase
+      .database()
+      .ref("users")
+      .orderByChild("id")
+      .equalTo(idUser)
+      .once("value", snapshot => callback(this.parsePseudo(snapshot)));
+  };
+
+  // traitement du nouveau message
+  parsePseudo = snapshot => {
+    // recupere les valeurs du snapshot contenant le nouveau message
+    // pour les mettres dans le format de giftedchat
+    console.log("fuck yeah !", snapshot.val());
+    const user = {
+      email: "",
+      id: "",
+      pseudo: ""
+    };
+
+    snapshot.forEach(element => {
+      user.pseudo = element.child("pseudo");
+      user.id = element.child("id");
+      user.email = element.child("email");
+
+      console.log("child : ", element.child("pseudo"));
+      /* element.forEach(data => {
+        console.log(data);
+        if (data.key === "pseudo") return data;
+      });
+      */
+    });
+    console.log(user);
+    return user;
+  };
+
   // traitement du nouveau message
   parse = snapshot => {
     // recupere les valeurs du snapshot contenant le nouveau message
@@ -185,19 +242,34 @@ class Fire {
     return message;
   };
 
+  formatDate = date => {
+    var d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+  };
+
   parseChannel = snapshot => {
     // recupere les valeurs du snapshot contenant le nouveau message
     // pour les mettres dans le format de giftedchat
-    const { timestamp: numberStamp, name, user } = snapshot.val();
+    console.log(snapshot.val());
+    const { timestamp: numberStamp, name, user, pseudo } = snapshot.val();
     const { key: _id } = snapshot;
 
-    const timestamp = new Date(numberStamp);
+    const timestamp = this.formatDate(numberStamp);
+
     // message dans le format de giftedchat
     const channel = {
       _id,
       timestamp,
       name,
-      user
+      user,
+      pseudo
     };
     return channel;
   };
@@ -269,12 +341,12 @@ class Fire {
   sendChannel = channel => {
     const name = channel.name;
     const user = channel.user;
-    const email = channel.mail;
+    const pseudo = channel.pseudo;
 
     const newChannel = {
       name,
       user,
-      email,
+      pseudo,
       timestamp: this.timestamp,
       messages: []
     };
