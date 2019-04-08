@@ -3,7 +3,8 @@ import { FETCH_USER } from "../actions/types";
 const initialState = {
   isAuthenticated: false,
   currentUser: null,
-  pseudo: ""
+  pseudo: "",
+  userId: ""
 };
 
 export default (state = initialState, action) => {

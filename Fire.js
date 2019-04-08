@@ -135,9 +135,9 @@ class Fire {
   // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
   // message ajouté on le récupère et on le passe a la methode parse
   onChannel = callback =>
-    this.refChannel
-      .limitToLast(20)
-      .on("child_added", snapshot => callback(this.parseChannel(snapshot)));
+    this.refChannel.on("child_added", snapshot =>
+      callback(this.parseChannel(snapshot))
+    );
 
   onSearchChannel = (text, callback) =>
     this.refChannel
@@ -265,6 +265,7 @@ class Fire {
   parseChannel = snapshot => {
     // recupere les valeurs du snapshot contenant le nouveau message
     // pour les mettres dans le format de giftedchat
+
     console.log(snapshot.val());
     const { timestamp: numberStamp, name, user, pseudo } = snapshot.val();
     const { key: _id } = snapshot;
@@ -281,6 +282,7 @@ class Fire {
     };
 
     console.log("apres transformation: ", channel);
+
     return channel;
   };
 

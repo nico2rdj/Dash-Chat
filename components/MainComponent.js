@@ -33,6 +33,8 @@ class Main extends Component {
       name: "",
       idChannel: "",
       channels: [],
+      channelsSearch: [],
+      dispChannel: [],
       user: null,
       search: ""
     };
@@ -68,9 +70,16 @@ class Main extends Component {
   // on réactualise le store de message
   componentDidMount() {
     Fire.shared.onChannel(channel => {
-      this.setState({
-        channels: [...this.state.channels, channel]
-      });
+      this.setState(
+        {
+          channels: [...this.state.channels, channel]
+        },
+        () => {
+          this.setState({
+            dispChannel: this.state.channels
+          });
+        }
+      );
     });
 
     Fire.shared.getUser(Fire.shared.uid, user => {
@@ -112,23 +121,28 @@ class Main extends Component {
   };
 
   searchRequest = text => {
-    console.log("text : " + text);
-    this.setState({ search: text }, () => {
-      if (this.state.search.length !== 0)
+    this.setState({ search: text, dispChannel: [], channelsSearch: [] }, () => {
+      console.log(text);
+
+      if (text.length === 0)
+        this.setState({
+          dispChannel: this.state.channels
+        });
+      else
         Fire.shared.onSearchChannel(text, channel => {
-          this.setState({
-            channels: [channel]
-          });
+          this.setState(
+            {
+              channelsSearch: this.state.channelsSearch.concat([channel])
+            },
+            () => {
+              this.setState({
+                dispChannel: this.state.channelsSearch
+              });
+            }
+          );
         });
-      else {
-        Fire.shared.onChannel(channel => {
-          this.setState({
-            channels: [...this.state.channels, channel]
-          });
-        });
-      }
     });
-    console.log("\\\\\\\\" + this.state.channels.length);
+    //console.log("\\\\\\\\" + this.state.channels.length);
   };
 
   renderHeader = () => {
@@ -202,7 +216,7 @@ class Main extends Component {
 
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
           <FlatList
-            data={this.state.channels}
+            data={this.state.dispChannel}
             renderItem={({ item }) => (
               <ListItem
                 title={`${item.name}`}
