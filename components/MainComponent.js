@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import Fire from "../Fire";
 import { List, ListItem, SearchBar } from "react-native-elements";
+import { connect } from "react-redux";
 
 import _ from "lodash";
 
@@ -32,16 +33,17 @@ class Main extends Component {
       name: "",
       idChannel: "",
       channels: [],
-      user: null
+      user: null,
+      search: ""
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.onPress = this.onPress.bind(this);
   }
 
-  onPress = id => {
+  onPress = (id, name) => {
     this.state.idChannel = id;
     this.props.navigation.navigate("Chat", {
-      name: this.state.name,
+      name: name,
       idChannel: this.state.idChannel,
       user: this.state.user
     });
@@ -77,41 +79,68 @@ class Main extends Component {
           user: user
         },
         () => {
-          console.log("main", this.state.user);
+          console.log("ici cest :", this.props.auth.pseudo);
         }
       );
     });
 
+    console.log(this.props);
+
     //console.log("pseudo: " + this.state.user.values());
   }
+
+  componentWillUpdate() {}
 
   componentDidUpdate() {
     if (this.state.user) console.log("main", this.state.user["pseudo"]);
   }
 
   onPressChannel = () => {
-    var pseudo = JSON.stringify(this.state.user["pseudo"]);
-    pseudo = pseudo.substring(1, pseudo.length - 1);
-    console.log("pseudo:::::: ", pseudo);
     var channel = {
       name: this.state.name,
       user: Fire.shared.uid,
-      pseudo: pseudo
+      pseudo: this.props.auth.pseudo
     };
 
     Fire.shared.sendChannel(channel);
     Alert.alert(
       "Nouveau cannal",
-      Fire.shared.email,
+      this.state.name,
       [{ text: "OK", onPress: () => console.log("OK Pressed") }],
       { cancelable: false }
     );
   };
 
+  searchRequest = text => {
+    console.log("text : " + text);
+    this.setState({ search: text }, () => {
+      if (this.state.search.length !== 0)
+        Fire.shared.onSearchChannel(text, channel => {
+          this.setState({
+            channels: [channel]
+          });
+        });
+      else {
+        Fire.shared.onChannel(channel => {
+          this.setState({
+            channels: [...this.state.channels, channel]
+          });
+        });
+      }
+    });
+    console.log("\\\\\\\\" + this.state.channels.length);
+  };
+
   renderHeader = () => {
     return (
       <View>
-        <SearchBar placeholder="Rechercher un cannal..." lightTheme round />
+        <SearchBar
+          placeholder="Rechercher un cannal..."
+          lightTheme
+          round
+          value={this.state.search}
+          onChangeText={text => this.searchRequest(text)}
+        />
         <View style={styles.row}>
           <View style={styles.inputWrap}>
             <TextInput
@@ -185,7 +214,7 @@ class Main extends Component {
                 }
                 button
                 onPress={() => {
-                  this.onPress(item._id);
+                  this.onPress(item._id, item.name);
                 }}
               />
             )}
@@ -251,4 +280,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Main;
+const mapStateToProps = state => {
+  return state;
+};
+
+export default connect(mapStateToProps)(Main);

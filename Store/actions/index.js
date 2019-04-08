@@ -6,9 +6,12 @@ export const fetchUser = () => dispatch => {
   Fire.shared.authRef.onAuthStateChanged(user => {
     if (user) {
       console.log("utilisateur connecté");
-      dispatch({
-        type: FETCH_USER,
-        payload: user
+      // requete pseudo
+      Fire.shared.getUser(Fire.shared.uid, user => {
+        dispatch({
+          type: FETCH_USER,
+          value: user
+        });
       });
     } else {
       console.log("utilisateur non connecté");
@@ -33,7 +36,12 @@ export const signIn = () => dispatch => {
 export const signOut = () => dispatch => {
   Fire.shared.authRef
     .signOut()
-    .then(() => {})
+    .then(() => {
+      dispatch({
+        type: FETCH_USER,
+        payload: null
+      });
+    })
     .catch(error => {
       console.log(error);
     });

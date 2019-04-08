@@ -10,15 +10,16 @@ export default (state = initialState, action) => {
   let nextState;
   switch (action.type) {
     case FETCH_USER:
-      console.log(action.value);
       if (action.value) {
         nextState = {
           ...state,
-          isAuthenticated: true
+          isAuthenticated: true,
+          pseudo: action.value.substring(1, action.value.length - 1)
           //currentUser: action.payload
         };
       }
       return nextState || state;
+
     default:
       return state;
   }

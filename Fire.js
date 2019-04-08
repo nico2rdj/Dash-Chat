@@ -139,6 +139,14 @@ class Fire {
       .limitToLast(20)
       .on("child_added", snapshot => callback(this.parseChannel(snapshot)));
 
+  onSearchChannel = (text, callback) =>
+    this.refChannel
+      .orderByChild("name")
+      .startAt(text)
+      .once("child_added", snapshot => {
+        callback(this.parseChannel(snapshot));
+      });
+
   // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
   // message ajouté on le récupère et on le passe a la methode parse
   on = callback =>
@@ -271,6 +279,8 @@ class Fire {
       user,
       pseudo
     };
+
+    console.log("apres transformation: ", channel);
     return channel;
   };
 
@@ -317,7 +327,6 @@ class Fire {
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
 
-      // 4.
       const message = {
         text,
         user,

@@ -11,7 +11,9 @@ class Signin extends React.Component {
     this.state = {
       email: "",
       password: "",
-      pseudo: ""
+      pseudo: "",
+      user: null,
+      dbPseudo: ""
     };
     this._toggleFavorite = this._toggleFavorite.bind(this);
   }
@@ -31,10 +33,29 @@ class Signin extends React.Component {
     Fire.shared.authRef
       .signInWithEmailAndPassword(this.state.email, this.state.password)
       .then(user => {
-        const action = { type: "FETCH_USER", value: "Fire.shared.isConnected" };
-        this.props.dispatch(action);
-        console.log("success");
-        this.props.navigation.navigate("SignedIn");
+        Fire.shared.getUser(Fire.shared.uid, user => {
+          this.setState(
+            {
+              user: user
+            },
+
+            () => {
+              const action = {
+                type: "FETCH_USER",
+                value: JSON.stringify(this.state.user["pseudo"])
+              };
+              this.props.dispatch(action);
+            }
+          );
+
+          /*const action = {
+          type: "FETCH_USER",
+          value: Fire.shared.getUser(Fire.shared.uid)
+        };
+        this.props.dispatch(action);*/
+          console.log("success");
+          this.props.navigation.navigate("SignedIn");
+        });
       })
       .catch(error => {
         const { code, message } = error;
