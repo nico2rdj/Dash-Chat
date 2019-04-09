@@ -2,7 +2,6 @@ import { FETCH_USER } from "../actions/types";
 
 const initialState = {
   isAuthenticated: false,
-  currentUser: null,
   pseudo: "",
   userId: ""
 };
@@ -15,8 +14,8 @@ export default (state = initialState, action) => {
         nextState = {
           ...state,
           isAuthenticated: true,
-          pseudo: action.value.substring(1, action.value.length - 1)
-          //currentUser: action.payload
+          pseudo: action.value[0].substring(1, action.value[0].length - 1),
+          userId: action.value[1]
         };
       }
       return nextState || state;

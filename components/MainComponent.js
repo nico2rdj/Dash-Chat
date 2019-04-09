@@ -82,6 +82,7 @@ class Main extends Component {
       );
     });
 
+    /*
     Fire.shared.getUser(Fire.shared.uid, user => {
       this.setState(
         {
@@ -92,6 +93,7 @@ class Main extends Component {
         }
       );
     });
+    */
 
     console.log(this.props);
 
@@ -107,7 +109,7 @@ class Main extends Component {
   onPressChannel = () => {
     var channel = {
       name: this.state.name,
-      user: Fire.shared.uid,
+      user: this.props.auth.userId,
       pseudo: this.props.auth.pseudo
     };
 

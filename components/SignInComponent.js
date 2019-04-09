@@ -42,7 +42,10 @@ class Signin extends React.Component {
             () => {
               const action = {
                 type: "FETCH_USER",
-                value: JSON.stringify(this.state.user["pseudo"])
+                value: [
+                  JSON.stringify(this.state.user["pseudo"]),
+                  Fire.shared.uid
+                ]
               };
               this.props.dispatch(action);
             }

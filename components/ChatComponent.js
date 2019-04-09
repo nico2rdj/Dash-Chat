@@ -1,6 +1,15 @@
 import React, { Component } from "react";
-import { View, StyleSheet } from "react-native";
-import { GiftedChat } from "react-native-gifted-chat";
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  TextInput,
+  Button
+} from "react-native";
+import { GiftedChat, InputToolbar } from "react-native-gifted-chat";
+import Composer from "./Composer";
+
 import Fire from "../Fire";
 
 class Chat extends React.Component {
@@ -15,7 +24,8 @@ class Chat extends React.Component {
       idChannel: "",
       isLoadingEarlier: false,
       size: 10,
-      pseudo: ""
+      pseudo: "",
+      test: ""
     };
   }
   // on let sur écoute le serveur dès qu'il y a un changement
@@ -99,18 +109,87 @@ class Chat extends React.Component {
     };
   }
 
+  // tinput = () => {
+  //   return (
+  //     <View>
+  //       <TouchableOpacity activeOpacity={0.6} />
+  //       <TextInput
+  //         placeholder="wassup"
+  //         returnKeyType={"send"}
+  //         onChangeText={text => this.setState({ test: text })}
+  //         value={this.state.text}
+  //         blurOnSubmit={false}
+  //         ref={"chatInputRef"}
+  //       />
+  //       <Button
+  //         style={{ fontSize: 20, color: "green" }}
+  //         styleDisabled={{ color: "red" }}
+  //         onPress={() => this.props.onSend}
+  //         title="Envoyer"
+  //       >
+  //         Press Me
+  //       </Button>
+  //     </View>
+  //   );
+  // };
+
+  tinput = props => {
+    return <Composer {...props} />;
+  };
+
+  renderInputToolbar = props => {
+    // Here you will return your custom InputToolbar.js file you copied before and include with your stylings, edits.
+
+    return (
+      // <View>
+      //   <TouchableOpacity activeOpacity={0.6} />
+      //   <TextInput
+      //     placeholder="wassup"
+      //     returnKeyType={"send"}
+      //     onChangeText={text => this.setState({ test: text })}
+      //     value={this.state.text}
+      //     blurOnSubmit={false}
+      //     ref={"chatInputRef"}
+      //   />
+      //   <Button
+      //     style={{ fontSize: 20, color: "green" }}
+      //     styleDisabled={{ color: "red" }}
+      //     onPress={() => this.props.onSend}
+      //     title="Envoyer"
+      //   >
+      //     Press Me
+      //   </Button>
+      // </View>
+
+      <InputToolbar
+        {...props}
+        renderComposer={this.tinput}
+        containerStyle={{ borderTopWidth: 1.5, borderTopColor: "#333" }}
+      />
+    );
+  };
+
   render() {
     return (
-      <GiftedChat
-        loadEarlier={true}
-        onLoadEarlier={this.onLoadEarlier}
-        isLoadingEarlier={this.state.isLoadingEarlier}
-        messages={this.state.messages}
-        onSend={messages =>
-          Fire.shared.sendMessageChannel(this.state.idChannel, messages)
-        }
-        user={this.user}
-      />
+      <View style={{ flex: 1 }}>
+        <GiftedChat
+          loadEarlier={true}
+          onLoadEarlier={this.onLoadEarlier}
+          isLoadingEarlier={this.state.isLoadingEarlier}
+          messages={this.state.messages}
+          onSend={messages =>
+            Fire.shared.sendMessageChannel(this.state.idChannel, messages)
+          }
+          user={this.user}
+          placeholder="Taper votre message"
+          renderInputToolbar={this.renderInputToolbar}
+          showAvatarForEveryMessage={true}
+        />
+        <KeyboardAvoidingView
+          behavior={"padding"}
+          keyboardVerticalOffset={80}
+        />
+      </View>
     );
   }
 }
