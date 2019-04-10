@@ -1,5 +1,9 @@
 import React from "react";
-import Navigation, { createRootNavigator } from "./Navigation/Navigation";
+import Navigation, {
+  createRootNavigator,
+  DrawerNavigation,
+  DrawerStack
+} from "./Navigation/Navigation";
 import { Provider, connect } from "react-redux";
 import Store from "./Store/configureStore";
 

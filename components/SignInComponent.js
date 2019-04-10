@@ -29,6 +29,10 @@ class Signin extends React.Component {
     //this.props.fetchUser();
   }
 
+  componentWillMount() {
+    this.props.navigation.setParams({ main_title: this.props.auth.pseudo });
+  }
+
   _toggleFavorite() {
     Fire.shared.authRef
       .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -47,42 +51,28 @@ class Signin extends React.Component {
                   Fire.shared.uid
                 ]
               };
+              this.props.dispatch(action);
 
               let actionC = {};
-              Fire.shared.onChannelT(channel => {
+              Fire.shared.onChannel(channel => {
                 actionC = {
                   type: "ADD_CHANNEL",
                   value: channel
                 };
                 this.props.dispatch(actionC);
               });
-
-              // const actionChannels = {
-              //   type: "FETCH_CHANNELS",
-              //   value: null
-              // };
-
-              // this.props.dispatch(actionChannels);
-              this.props.dispatch(action);
             }
           );
 
-          // const action = {
-          //   type: "FETCH_USER",
-          //   value: Fire.shared.getUser(Fire.shared.uid)
-          // };
-          //this.props.dispatch(action);
-          console.log("success");
-          this.props.navigation.navigate("SignedIn");
+          this.props.navigation.navigate("Main", {
+            main_title: this.props.auth.pseudo
+          });
         });
       })
       .catch(error => {
         const { code, message } = error;
         console.log(message);
         console.log(code);
-        // For details of error codes, see the docs
-        // The message contains the default Firebase string
-        // representation of the error
       });
   }
 
@@ -163,9 +153,5 @@ class Signin extends React.Component {
 const mapStateToProps = state => {
   return state;
 };
-
-const mapDispatchToProps = dispatch => ({
-  fetchUser: () => dispatch(fetchUser())
-});
 
 export default connect(mapStateToProps)(Signin);

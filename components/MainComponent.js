@@ -6,8 +6,6 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  ScrollView,
-  ActivityIndicator,
   Button,
   Alert,
   YellowBox
@@ -32,9 +30,7 @@ class Main extends Component {
     this.state = {
       name: "",
       idChannel: "",
-      channels: [],
-      channelsSearch: [],
-      dispChannel: [],
+      dispChannel: null,
       user: null,
       search: ""
     };
@@ -66,45 +62,8 @@ class Main extends Component {
     );
   };
 
-  // on let sur écoute le serveur dès qu'il y a un changement
-  // on réactualise le store de message
-
   componentDidMount() {
-    // Fire.shared.onChannel(channel => {
-    //   this.setState(
-    //     {
-    //       channels: [...this.state.channels, channel]
-    //     },
-    //     () => {
-    //       this.setState({
-    //         dispChannel: this.state.channels
-    //       });
-    //     }
-    //   );
-    // });
-
     console.log(this.props);
-
-    /*
-    Fire.shared.getUser(Fire.shared.uid, user => {
-      this.setState(
-        {
-          user: user
-        },
-        () => {
-          console.log("ici cest :", this.props.auth.pseudo);
-        }
-      );
-    });
-    */
-
-    //console.log("pseudo: " + this.state.user.values());
-  }
-
-  componentWillUpdate() {}
-
-  componentDidUpdate() {
-    if (this.state.user) console.log("main", this.state.user["pseudo"]);
   }
 
   onPressChannel = () => {
@@ -124,28 +83,15 @@ class Main extends Component {
   };
 
   searchRequest = text => {
-    this.setState({ search: text, dispChannel: [], channelsSearch: [] }, () => {
-      console.log(text);
-
-      if (text.length === 0)
-        this.setState({
-          dispChannel: this.state.channels
-        });
-      else
-        Fire.shared.onSearchChannel(text, channel => {
-          this.setState(
-            {
-              channelsSearch: this.state.channelsSearch.concat([channel])
-            },
-            () => {
-              this.setState({
-                dispChannel: this.state.channelsSearch
-              });
-            }
-          );
-        });
-    });
-    //console.log("\\\\\\\\" + this.state.channels.length);
+    this.setState(
+      {
+        search: text,
+        dispChannel: this.props.channel.channels.filter(item =>
+          item.name.toString().startsWith(text)
+        )
+      },
+      () => {}
+    );
   };
 
   renderHeader = () => {
@@ -199,29 +145,15 @@ class Main extends Component {
   };
 
   render() {
+    console.log("jsjskjs " + this.props.navigation.state.params.main_title);
     return (
       <View style={{ flex: 1 }}>
-        {/*
-        <Text style={styles.title}>Rentrez le nom d'un canal</Text>
-        <TextInput
-          onChangeText={this.onChangeText}
-          style={styles.nameInput}
-          placeholder="Creed"
-          value={this.state.name}
-        />
-        *
-
-        <TouchableOpacity onPress={this.onPressChannel}>
-          <Text style={styles.buttonText}>Créer un channel</Text>
-        </TouchableOpacity>
-
-        {/* for loop maps channel  */}
-
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
           <FlatList
             data={
-              //this.state.dispChannel}
-              this.props.channel.channels
+              this.state.dispChannel
+                ? this.state.dispChannel
+                : this.props.channel.channels
             }
             renderItem={({ item }) => (
               <ListItem
@@ -245,10 +177,6 @@ class Main extends Component {
             //ListFooterComponent={this.renderFooter}
           />
         </List>
-
-        <TouchableOpacity onPress={this.onPress}>
-          <Text style={styles.buttonText}>Rechercher</Text>
-        </TouchableOpacity>
       </View>
     );
   }
