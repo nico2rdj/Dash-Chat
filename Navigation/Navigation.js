@@ -8,6 +8,7 @@ import {
   Icon,
   TouchableOpacity
 } from "react-native";
+import { Container, Content, Header, Left, Body } from "native-base";
 
 // Import the screens
 import Main from "../components/MainComponent";
@@ -18,7 +19,8 @@ import {
   createSwitchNavigator,
   createTabNavigator,
   createBottomTabNavigator,
-  createDrawerNavigator
+  createDrawerNavigator,
+  DrawerItems
 } from "react-navigation";
 
 import { fetchUser } from "../Store/actions";
@@ -36,11 +38,19 @@ export const Signed = createStackNavigator({
     screen: Main,
     navigationOptions: ({ navigation }) => ({
       title: "Bienvenue " + navigation.getParam("main_title"),
+
+      headerStyle: {
+        backgroundColor: "white"
+      },
+      headerTintColor: "#ff990a",
+      headerTitleStyle: {
+        fontWeight: "bold"
+      },
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
-            source={require("../menu-button.png")}
-            style={{ marginLeft: 15, height: 40, width: 40 }}
+            source={require("../menu_p.png")}
+            style={{ marginLeft: 15, height: 30, width: 30 }}
           />
         </TouchableOpacity>
       )
@@ -80,6 +90,14 @@ export const SignedOut = createBottomTabNavigator(
   }
 );
 
+SignedOut.navigationOptions = ({ navigation }) => {
+  let drawerLockMode = "locked-closed";
+
+  return {
+    drawerLockMode
+  };
+};
+
 /*
 export const SignedOut = createStackNavigator({
   SignUp: {
@@ -96,6 +114,44 @@ export const SignedOut = createStackNavigator({
   }
 });
 */
+const customNavigator = props => {
+  return (
+    <Container>
+      <Header
+        style={{
+          height: 150,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+
+          backgroundColor: "white"
+        }}
+      >
+        <Body
+          style={{
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+
+            backgroundColor: "white"
+          }}
+        >
+          <Image
+            style={{
+              width: 200,
+              height: 50
+            }}
+            source={require("../dashChat.png")}
+          />
+          <Text />
+        </Body>
+      </Header>
+      <Content>
+        <DrawerItems {...props} />
+      </Content>
+    </Container>
+  );
+};
 
 export const createRootNavigator = (signedIn = false) => {
   return createSwitchNavigator(
@@ -116,9 +172,52 @@ export const createRootNavigator = (signedIn = false) => {
   );
 };
 
-export const DrawerStack = createDrawerNavigator({
-  screen1: Signed
-});
+export const DrawerStack = createDrawerNavigator(
+  {
+    Acceuil: {
+      screen: Signed,
+      navigationOptions: {
+        labelStyle: {
+          fontFamily: "SomeFont",
+          color: "#ff990a"
+        },
+        drawerLabel: "Acceuil",
+        drawerIcon: () => (
+          <Image
+            source={require("../home.png")}
+            resizeMode="contain"
+            style={{ width: 20, height: 20 }}
+          />
+        )
+      }
+    },
+    Deconnexion: {
+      screen: SignedOut,
+      navigationOptions: {
+        tabBarVisible: false,
+        labelStyle: {
+          fontFamily: "SomeFont",
+          color: "#ff990a"
+        },
+        drawerLabel: "Deconnexion",
+        drawerIcon: () => (
+          <Image
+            source={require("../logout.png")}
+            resizeMode="contain"
+            style={{ width: 20, height: 20 }}
+          />
+        )
+      }
+    }
+  },
+  {
+    contentComponent: customNavigator,
+    contentOptions: {
+      activeTintColor: "#ff990a",
+      inactiveTintColor: "#ff990a"
+    }
+  }
+);
 
 // export const DrawerNavigation = createStackNavigator(
 //   {

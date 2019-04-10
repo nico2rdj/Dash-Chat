@@ -31,6 +31,7 @@ class Signin extends React.Component {
 
   componentWillMount() {
     this.props.navigation.setParams({ main_title: this.props.auth.pseudo });
+    Fire.shared.off();
   }
 
   _toggleFavorite() {
