@@ -68,19 +68,22 @@ class Main extends Component {
 
   // on let sur écoute le serveur dès qu'il y a un changement
   // on réactualise le store de message
+
   componentDidMount() {
-    Fire.shared.onChannel(channel => {
-      this.setState(
-        {
-          channels: [...this.state.channels, channel]
-        },
-        () => {
-          this.setState({
-            dispChannel: this.state.channels
-          });
-        }
-      );
-    });
+    // Fire.shared.onChannel(channel => {
+    //   this.setState(
+    //     {
+    //       channels: [...this.state.channels, channel]
+    //     },
+    //     () => {
+    //       this.setState({
+    //         dispChannel: this.state.channels
+    //       });
+    //     }
+    //   );
+    // });
+
+    console.log(this.props);
 
     /*
     Fire.shared.getUser(Fire.shared.uid, user => {
@@ -94,8 +97,6 @@ class Main extends Component {
       );
     });
     */
-
-    console.log(this.props);
 
     //console.log("pseudo: " + this.state.user.values());
   }
@@ -218,7 +219,10 @@ class Main extends Component {
 
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
           <FlatList
-            data={this.state.dispChannel}
+            data={
+              //this.state.dispChannel}
+              this.props.channel.channels
+            }
             renderItem={({ item }) => (
               <ListItem
                 title={`${item.name}`}

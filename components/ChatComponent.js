@@ -163,8 +163,8 @@ class Chat extends React.Component {
 
       <InputToolbar
         {...props}
-        renderComposer={this.tinput}
-        containerStyle={{ borderTopWidth: 1.5, borderTopColor: "#333" }}
+        renderAccessory={this.tinput}
+        //containerStyle={{ borderTopWidth: 1.5, borderTopColor: "#333" }}
       />
     );
   };

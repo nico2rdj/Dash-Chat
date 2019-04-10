@@ -2,7 +2,15 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import { Platform, StyleSheet, TextInput } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+  Button,
+  ScrollView
+} from "react-native";
+import EmojiSelector from "react-native-emoji-selector";
 
 import { MIN_COMPOSER_HEIGHT, DEFAULT_PLACEHOLDER } from "./Constant";
 import Color from "./Color";
@@ -24,38 +32,76 @@ export default class Composer extends React.Component {
     }
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEmo: false
+    };
+  }
+
   onChangeText(text) {
     this.props.onTextChanged(text);
   }
 
+  EmojisMenu = () => {
+    return (
+      <View style={{ height: 80, top: 0 }}>
+        <EmojiSelector
+          onEmojiSelected={emoji => console.log(emoji)}
+          showSearchBar={false}
+          style={{ flex: 1, flexWrap: "wrap" }}
+        />
+      </View>
+    );
+  };
+
   render() {
     return (
-      <TextInput
-        testID={this.props.placeholder}
-        accessible
-        accessibilityLabel={this.props.placeholder}
-        placeholder="{this.props.placeholder}"
-        placeholderTextColor={this.props.placeholderTextColor}
-        multiline={this.props.multiline}
-        onChange={e => this.onContentSizeChange(e)}
-        onContentSizeChange={e => this.onContentSizeChange(e)}
-        onChangeText={text => this.onChangeText(text)}
-        style={[
-          styles.textInput,
-          this.props.textInputStyle,
-          { height: this.props.composerHeight }
-        ]}
-        autoFocus={this.props.textInputAutoFocus}
-        value={this.props.text}
-        enablesReturnKeyAutomatically
-        underlineColorAndroid="transparent"
-        keyboardAppearance={this.props.keyboardAppearance}
-        {...this.props.textInputProps}
-      />
+      //   <TextInput
+      //     testID={this.props.placeholder}
+      //     accessible
+      //     accessibilityLabel={this.props.placeholder}
+      //     placeholder="Entrez votre message..."
+      //     placeholderTextColor={this.props.placeholderTextColor}
+      //     multiline={this.props.multiline}
+      //     onChange={e => this.onContentSizeChange(e)}
+      //     onContentSizeChange={e => this.onContentSizeChange(e)}
+      //     onChangeText={text => this.onChangeText(text)}
+      //     style={[
+      //       styles.textInput,
+
+      //       this.props.textInputStyle,
+      //       { height: this.props.composerHeight }
+      //     ]}
+      //     autoFocus={this.props.textInputAutoFocus}
+      //     value={this.props.text}
+      //     enablesReturnKeyAutomatically
+      //     underlineColorAndroid="transparent"
+      //     keyboardAppearance={this.props.keyboardAppearance}
+      //     {...this.props.textInputProps}
+      //   />
+      <View>
+        <Button
+          style={{ fontSize: 20, color: "green" }}
+          styleDisabled={{ color: "red" }}
+          onPress={() =>
+            this.setState({
+              isEmo: !this.state.isEmo
+            })
+          }
+          title="Emojis"
+        >
+          Emojis
+        </Button>
+        <View style={{ flexDirection: "column" }}>
+          {this.state.isEmo ? this.EmojisMenu() : null}
+        </View>
+      </View>
     );
   }
 }
 
+const offset = 24;
 const styles = StyleSheet.create({
   textInput: {
     flex: 1,
@@ -70,6 +116,48 @@ const styles = StyleSheet.create({
       ios: 5,
       android: 3
     })
+  },
+  title: {
+    // 4.
+    marginTop: offset,
+    marginLeft: offset,
+    fontSize: offset
+  },
+  buttonText: {
+    // 5.
+    marginLeft: offset,
+    marginRight: offset,
+    fontSize: offset,
+    borderColor: "#111111",
+    borderWidth: 1
+  },
+  nameInput: {
+    height: offset * 2,
+    margin: offset,
+    paddingHorizontal: offset,
+    borderColor: "#111111",
+    borderWidth: 1
+  },
+
+  row: {
+    flex: 1,
+    flexDirection: "row"
+  },
+  inputWrap: {
+    flex: 1,
+    borderColor: "#cccccc",
+    borderBottomWidth: 1,
+    borderRadius: 0
+  },
+  inputdate: {
+    fontSize: 14,
+    marginBottom: -12,
+    color: "#6a4595"
+  },
+  inputcvv: {
+    fontSize: 14,
+    marginBottom: -12,
+    color: "#6a4595"
   }
 });
 

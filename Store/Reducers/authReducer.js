@@ -1,9 +1,10 @@
-import { FETCH_USER } from "../actions/types";
+import { FETCH_USER, FETCH_CHANNELS } from "../actions/types";
 
 const initialState = {
   isAuthenticated: false,
   pseudo: "",
-  userId: ""
+  userId: "",
+  isIn: false
 };
 
 export default (state = initialState, action) => {
@@ -18,6 +19,9 @@ export default (state = initialState, action) => {
           userId: action.value[1]
         };
       }
+      return nextState || state;
+    case "dkdkd":
+      nextState = { ...state, isIn: true };
       return nextState || state;
 
     default:

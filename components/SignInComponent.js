@@ -47,15 +47,31 @@ class Signin extends React.Component {
                   Fire.shared.uid
                 ]
               };
+
+              let actionC = {};
+              Fire.shared.onChannelT(channel => {
+                actionC = {
+                  type: "ADD_CHANNEL",
+                  value: channel
+                };
+                this.props.dispatch(actionC);
+              });
+
+              // const actionChannels = {
+              //   type: "FETCH_CHANNELS",
+              //   value: null
+              // };
+
+              // this.props.dispatch(actionChannels);
               this.props.dispatch(action);
             }
           );
 
-          /*const action = {
-          type: "FETCH_USER",
-          value: Fire.shared.getUser(Fire.shared.uid)
-        };
-        this.props.dispatch(action);*/
+          // const action = {
+          //   type: "FETCH_USER",
+          //   value: Fire.shared.getUser(Fire.shared.uid)
+          // };
+          //this.props.dispatch(action);
           console.log("success");
           this.props.navigation.navigate("SignedIn");
         });

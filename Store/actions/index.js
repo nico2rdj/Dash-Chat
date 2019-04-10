@@ -81,3 +81,26 @@ export const onRegister = (email, password) => {
       // representation of the error
     });
 };
+
+export const fetchChannels = () => dispatch => {
+  return Fire.shared.onChannel(channel => {
+    dispatch(addChannel(channel));
+  });
+
+  /* simulate communication w the server */
+  /*
+  setTimeout(() => {
+    dispatch(addGames(GAMES));
+  }, 2000);
+  */
+};
+
+export const addChannels = channels => ({
+  type: ActionTypes.FETCH_CHANNELS,
+  value: channels
+});
+
+export const addChannel = channel => ({
+  type: ActionTypes.ADD_CHANNEL,
+  value: channel
+});

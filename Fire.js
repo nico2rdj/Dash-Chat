@@ -139,6 +139,13 @@ class Fire {
       callback(this.parseChannel(snapshot))
     );
 
+  onChannelT = callback => {
+    console.log("/////////////////////////////");
+    this.refChannel.on("child_added", snapshot =>
+      callback(this.parseChannel(snapshot))
+    );
+  };
+
   onSearchChannel = (text, callback) =>
     this.refChannel
       .orderByChild("name")
