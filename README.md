@@ -10,8 +10,19 @@
 </h3>
 <p align="center">
   Chat app sur React Native <br/>
-  <small>Messenger</small>
+  <small>Messenger implémenté avec firebase</small>
 </p>
+
+## Features
+
+- Choix du pseudo par l'utilisateur
+- Inscription /Connexion
+- Chargement des anciens messages
+- Avatar
+- Recherches des channels de discussions
+- Burger menu avec la deconnexion
+- Création de channels
+- Support du redux store
 
 ## License
 
