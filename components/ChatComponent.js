@@ -8,9 +8,9 @@ import {
   Button
 } from "react-native";
 import { GiftedChat, InputToolbar } from "react-native-gifted-chat";
+import { connect } from "react-redux";
 import Composer from "./Composer";
-
-import Fire from "../Fire";
+import SvgUri from "expo-svg-uri";
 
 class Chat extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -28,15 +28,14 @@ class Chat extends React.Component {
       test: ""
     };
   }
-  // on let sur écoute le serveur dès qu'il y a un changement
-  // on réactualise le store de message
+
   componentDidMount() {
     this.setState(
       {
         idChannel: this.props.navigation.state.params.idChannel
       },
       () => {
-        Fire.shared.onMessagesRefresh(
+        this.props.auth.db.onMessagesRefresh(
           this.state.idChannel,
           message =>
             this.setState(previousState => ({
@@ -46,32 +45,16 @@ class Chat extends React.Component {
         );
       }
     );
-    Fire.shared.getUser(Fire.shared.uid, user => {
-      this.setState(
-        {
-          user: user
-        },
-        () => {
-          var pseudo = JSON.stringify(this.state.user["pseudo"]);
-          pseudo = pseudo.substring(1, pseudo.length - 1);
-          this.setState({
-            pseudo: pseudo
-          });
-        }
-      );
-    });
   }
 
   onLoadEarlier = () => {
-    console.log("chargement");
-
     this.setState(
       {
         size: this.state.size + 5,
         messages: []
       },
       () => {
-        Fire.shared.onMessagesRefresh(
+        this.props.auth.db.onMessagesRefresh(
           this.state.idChannel,
           message =>
             this.setState(previousState => ({
@@ -82,30 +65,35 @@ class Chat extends React.Component {
       }
     );
 
-    this.setState(previousState => {
-      return {
-        isLoadingEarlier: true
-      };
-    });
-    console.log(this.state.isLoadingEarlier);
-    this.setState(previousState => {
-      return {
-        isLoadingEarlier: false
-      };
-    });
+    this.setState(
+      previousState => {
+        return {
+          isLoadingEarlier: true
+        };
+      },
+      () => {
+        this.setState(previousState => {
+          return {
+            isLoadingEarlier: false
+          };
+        });
+      }
+    );
   };
 
   // quand on quitte le channel on coupe l'écoute
   componentWillUnmount() {
-    Fire.shared.off();
+    this.props.auth.db.off();
   }
 
   get user() {
-    // Return our name and our UID for GiftedChat to parse
     return {
-      name: this.state.pseudo,
-      _id: Fire.shared.uid
-      //_idChannel: this.props.navigation.state.params.idChannel
+      name: this.props.auth.pseudo,
+      _id: this.props.auth.userId,
+      avatar:
+        "https://avatars.dicebear.com/v2/male/" +
+        this.props.auth.pseudo +
+        ".svg"
     };
   }
 
@@ -163,7 +151,8 @@ class Chat extends React.Component {
 
       <InputToolbar
         {...props}
-        renderAccessory={this.tinput}
+        renderComposer={this.tinput}
+
         //containerStyle={{ borderTopWidth: 1.5, borderTopColor: "#333" }}
       />
     );
@@ -178,12 +167,18 @@ class Chat extends React.Component {
           isLoadingEarlier={this.state.isLoadingEarlier}
           messages={this.state.messages}
           onSend={messages =>
-            Fire.shared.sendMessageChannel(this.state.idChannel, messages)
+            this.props.auth.db.sendMessageChannel(
+              this.state.idChannel,
+              messages
+            )
           }
           user={this.user}
           placeholder="Taper votre message"
           renderInputToolbar={this.renderInputToolbar}
           showAvatarForEveryMessage={true}
+          renderAvatar={() => (
+            <SvgUri source={{ uri: this.user.avatar }} width={24} height={24} />
+          )}
         />
         <KeyboardAvoidingView
           behavior={"padding"}
@@ -196,4 +191,8 @@ class Chat extends React.Component {
 
 const styles = StyleSheet.create({});
 
-export default Chat;
+const mapStateToProps = state => {
+  return state;
+};
+
+export default connect(mapStateToProps)(Chat);

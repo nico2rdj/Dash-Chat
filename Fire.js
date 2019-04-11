@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import { connect } from "react-redux";
+
 class Fire {
   constructor() {
     this.init();
@@ -39,19 +39,6 @@ class Fire {
     }
   };
 
-  get isConnected() {
-    var status = false;
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        console.log("connecté !");
-        status = true;
-      } else {
-        console.log("pas connecté !");
-      }
-    });
-    return status;
-  }
-
   // inscription
   onRegister = (email, password, pseudo) => {
     firebase
@@ -71,26 +58,12 @@ class Fire {
         const { code, message } = error;
         console.log(message);
         console.log(code);
-        console.log(password);
-        // For details of error codes, see the docs
-        // The message contains the default Firebase string
-        // representation of the error
       });
   };
 
   // connexion
   onLogin = (email, password) => {
-    Fire.shared.authRef
-      .signInWithEmailAndPassword(email, password)
-      .then(user => {})
-      .catch(error => {
-        const { code, message } = error;
-        console.log(message);
-        console.log(code);
-        // For details of error codes, see the docs
-        // The message contains the default Firebase string
-        // representation of the error
-      });
+    return Fire.shared.authRef.signInWithEmailAndPassword(email, password);
   };
 
   /*
@@ -106,17 +79,13 @@ class Fire {
       });
   };
 */
-  // retourne de la route messages dans la db
+
   get ref() {
-    return firebase.database().ref("messages");
+    return firebase.database().ref("channel");
   }
 
   get refUser() {
     return firebase.database().ref("users");
-  }
-
-  get idChannel() {
-    return this.state.idChannel;
   }
 
   // retourne de la route channel dans la db
@@ -128,17 +97,6 @@ class Fire {
     return firebase.auth();
   }
 
-  get provider() {
-    return new firebase.auth.GoogleAuthProvider();
-  }
-
-  // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
-  // message ajouté on le récupère et on le passe a la methode parse
-  onChannel = callback =>
-    this.refChannel.on("child_added", snapshot =>
-      callback(this.parseChannel(snapshot))
-    );
-
   onSearchChannel = (text, callback) =>
     this.refChannel
       .orderByChild("name")
@@ -147,15 +105,6 @@ class Fire {
         callback(this.parseChannel(snapshot));
       });
 
-  // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
-  // message ajouté on le récupère et on le passe a la methode parse
-  on = callback =>
-    this.ref
-      .limitToLast(20)
-      .on("child_added", snapshot => callback(this.parse(snapshot)));
-
-  // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
-  // message ajouté on le récupère et on le passe a la methode parse
   onMessages = (idChannel, callback) =>
     firebase
       .database()
@@ -163,10 +112,7 @@ class Fire {
       .limitToLast(5)
       .on("child_added", snapshot => callback(this.parse(snapshot)));
 
-  // recupere les 20 derniers messages de la /messages et dès qu'il y a un nouveau
-  // message ajouté on le récupère et on le passe a la methode parse
   onMessagesRefresh = (idChannel, callback, size) => {
-    console.log("ici !");
     firebase
       .database()
       .ref("channel/" + idChannel + "/messages")
@@ -175,28 +121,6 @@ class Fire {
   };
 
   getUser = (idUser, callback) => {
-    /*
-    firebase
-      .database()
-      .ref("users")
-      .orderByChild("id")
-      .equalTo(idUser)
-      .on("value", function(snapshot) {
-        console.log(snapshot.val);
-        var pseudo = "";
-        snapshot.forEach(function(data) {
-          data.forEach(function(val) {
-            if (val.key === "pseudo") {
-              console.log(val);
-              pseudo = val;
-              console.log(pseudo);
-            }
-          });
-        });
-        return pseudo;
-      });
-    */
-
     firebase
       .database()
       .ref("users")
@@ -205,11 +129,12 @@ class Fire {
       .once("value", snapshot => callback(this.parsePseudo(snapshot)));
   };
 
-  // traitement du nouveau message
+  onChannel = callback =>
+    this.refChannel.on("child_added", snapshot =>
+      callback(this.parseChannel(snapshot))
+    );
+
   parsePseudo = snapshot => {
-    // recupere les valeurs du snapshot contenant le nouveau message
-    // pour les mettres dans le format de giftedchat
-    console.log("fuck yeah !", snapshot.val());
     const user = {
       email: "",
       id: "",
@@ -220,15 +145,8 @@ class Fire {
       user.pseudo = element.child("pseudo");
       user.id = element.child("id");
       user.email = element.child("email");
-
-      console.log("child : ", element.child("pseudo"));
-      /* element.forEach(data => {
-        console.log(data);
-        if (data.key === "pseudo") return data;
-      });
-      */
     });
-    console.log(user);
+
     return user;
   };
 
@@ -263,16 +181,11 @@ class Fire {
   };
 
   parseChannel = snapshot => {
-    // recupere les valeurs du snapshot contenant le nouveau message
-    // pour les mettres dans le format de giftedchat
-
-    console.log(snapshot.val());
     const { timestamp: numberStamp, name, user, pseudo } = snapshot.val();
     const { key: _id } = snapshot;
 
     const timestamp = this.formatDate(numberStamp);
 
-    // message dans le format de giftedchat
     const channel = {
       _id,
       timestamp,
@@ -280,8 +193,6 @@ class Fire {
       user,
       pseudo
     };
-
-    console.log("apres transformation: ", channel);
 
     return channel;
   };
@@ -312,9 +223,6 @@ class Fire {
     for (let i = 0; i < messages.length; i++) {
       const { text, user } = messages[i];
 
-      console.log(idChannel);
-
-      // 4.
       const message = {
         text,
         user,

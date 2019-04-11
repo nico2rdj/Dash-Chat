@@ -15,6 +15,8 @@ import EmojiSelector from "react-native-emoji-selector";
 import { MIN_COMPOSER_HEIGHT, DEFAULT_PLACEHOLDER } from "./Constant";
 import Color from "./Color";
 
+const InputAccessoryView = require("InputAccessoryView");
+
 export default class Composer extends React.Component {
   onContentSizeChange(e) {
     const { contentSize } = e.nativeEvent;
@@ -56,46 +58,32 @@ export default class Composer extends React.Component {
   };
 
   render() {
+    const inputAccessoryViewID = "uniqueID";
     return (
-      //   <TextInput
-      //     testID={this.props.placeholder}
-      //     accessible
-      //     accessibilityLabel={this.props.placeholder}
-      //     placeholder="Entrez votre message..."
-      //     placeholderTextColor={this.props.placeholderTextColor}
-      //     multiline={this.props.multiline}
-      //     onChange={e => this.onContentSizeChange(e)}
-      //     onContentSizeChange={e => this.onContentSizeChange(e)}
-      //     onChangeText={text => this.onChangeText(text)}
-      //     style={[
-      //       styles.textInput,
-
-      //       this.props.textInputStyle,
-      //       { height: this.props.composerHeight }
-      //     ]}
-      //     autoFocus={this.props.textInputAutoFocus}
-      //     value={this.props.text}
-      //     enablesReturnKeyAutomatically
-      //     underlineColorAndroid="transparent"
-      //     keyboardAppearance={this.props.keyboardAppearance}
-      //     {...this.props.textInputProps}
-      //   />
       <View>
-        <Button
-          style={{ fontSize: 20, color: "green" }}
-          styleDisabled={{ color: "red" }}
-          onPress={() =>
-            this.setState({
-              isEmo: !this.state.isEmo
-            })
-          }
-          title="Emojis"
-        >
-          Emojis
-        </Button>
-        <View style={{ flexDirection: "column" }}>
-          {this.state.isEmo ? this.EmojisMenu() : null}
-        </View>
+        <TextInput
+          testID={this.props.placeholder}
+          accessible
+          accessibilityLabel={this.props.placeholder}
+          placeholder="Entrez votre message..."
+          placeholderTextColor={this.props.placeholderTextColor}
+          multiline={this.props.multiline}
+          onChange={e => this.onContentSizeChange(e)}
+          onContentSizeChange={e => this.onContentSizeChange(e)}
+          onChangeText={text => this.onChangeText(text)}
+          style={[
+            styles.textInput,
+
+            this.props.textInputStyle,
+            { height: this.props.composerHeight }
+          ]}
+          autoFocus={this.props.textInputAutoFocus}
+          value={this.props.text}
+          enablesReturnKeyAutomatically
+          underlineColorAndroid="transparent"
+          keyboardAppearance={this.props.keyboardAppearance}
+          {...this.props.textInputProps}
+        />
       </View>
     );
   }

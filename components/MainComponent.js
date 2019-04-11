@@ -8,11 +8,12 @@ import {
   FlatList,
   Button,
   Alert,
-  YellowBox
+  YellowBox,
+  Image
 } from "react-native";
-import Fire from "../Fire";
 import { List, ListItem, SearchBar } from "react-native-elements";
 import { connect } from "react-redux";
+import SvgUri from "expo-svg-uri";
 
 import _ from "lodash";
 
@@ -62,10 +63,6 @@ class Main extends Component {
     );
   };
 
-  componentDidMount() {
-    console.log(this.props);
-  }
-
   onPressChannel = () => {
     var channel = {
       name: this.state.name,
@@ -73,7 +70,8 @@ class Main extends Component {
       pseudo: this.props.auth.pseudo
     };
 
-    Fire.shared.sendChannel(channel);
+    this.props.auth.db.sendChannel(channel);
+
     Alert.alert(
       "Nouveau cannal",
       this.state.name,
@@ -145,7 +143,6 @@ class Main extends Component {
   };
 
   render() {
-    console.log("jsjskjs " + this.props.navigation.state.params.main_title);
     return (
       <View style={{ flex: 1 }}>
         <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
@@ -157,6 +154,18 @@ class Main extends Component {
             }
             renderItem={({ item }) => (
               <ListItem
+                avatar={
+                  <SvgUri
+                    width="30"
+                    height="30"
+                    source={{
+                      uri:
+                        "https://avatars.dicebear.com/v2/male/" +
+                        `${item.pseudo}` +
+                        ".svg"
+                    }}
+                  />
+                }
                 title={`${item.name}`}
                 subtitle={
                   "Créateur : " +

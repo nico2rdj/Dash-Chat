@@ -1,24 +1,26 @@
 import React from "react";
-import { View, Alert, Button } from "react-native";
+import { View, Alert, Button, Image } from "react-native";
 import { Card, FormLabel, FormInput } from "react-native-elements";
-import Fire from "../Fire";
+import { connect } from "react-redux";
+import Avatars from "@dicebear/avatars";
+import sprites from "@dicebear/avatars-gridy-sprites";
+import SvgUri from "expo-svg-uri";
 
-export default class Signup extends React.Component {
+class Signup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
       password: "",
-      pseudo: ""
+      pseudo: "",
+      avatar: null
     };
 
     this.onPressRegister = this.onPressRegister.bind(this);
   }
 
-  componentDidMount() {}
-
   onPressRegister = () => {
-    Fire.shared.onRegister(
+    this.props.auth.db.onRegister(
       this.state.email,
       this.state.password,
       this.state.pseudo
@@ -37,9 +39,10 @@ export default class Signup extends React.Component {
     );
   };
 
-  // .then(() => navigation.navigate("SignedIn"));
-
   render() {
+    let options = {};
+    let avatars = new Avatars(sprites(options));
+    const svgB = avatars.create(this.state.pseudo);
     return (
       <View style={{ paddingVertical: 20 }}>
         <Card>
@@ -50,6 +53,18 @@ export default class Signup extends React.Component {
               this.setState({ pseudo: text });
             }}
           />
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <SvgUri
+              width="200"
+              height="200"
+              source={{
+                uri:
+                  "https://avatars.dicebear.com/v2/male/" +
+                  this.state.pseudo +
+                  ".svg"
+              }}
+            />
+          </View>
           <FormLabel>Email</FormLabel>
           <FormInput
             placeholder="Email..."
@@ -77,3 +92,9 @@ export default class Signup extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return state;
+};
+
+export default connect(mapStateToProps)(Signup);

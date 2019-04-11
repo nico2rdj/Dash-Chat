@@ -10,10 +10,10 @@ import {
 } from "react-native";
 import { Container, Content, Header, Left, Body } from "native-base";
 
-// Import the screens
+// Import les screens
 import Main from "../components/MainComponent";
 import Chat from "../components/ChatComponent";
-// Import React Navigation
+
 import {
   createStackNavigator,
   createSwitchNavigator,
@@ -23,16 +23,17 @@ import {
   DrawerItems
 } from "react-navigation";
 
-import { fetchUser } from "../Store/actions";
-import { connect } from "react-redux";
 import SignIn from "../components/SignInComponent";
 import SignUp from "../components/SignUpComponent";
+
+import SvgUri from "expo-svg-uri";
 
 // Create the navigator
 const mapStateToProps = state => {
   return state;
 };
 
+// utilisateur connecté
 export const Signed = createStackNavigator({
   Main: {
     screen: Main,
@@ -42,7 +43,7 @@ export const Signed = createStackNavigator({
       headerStyle: {
         backgroundColor: "white"
       },
-      headerTintColor: "#ff990a",
+      headerTintColor: "black",
       headerTitleStyle: {
         fontWeight: "bold"
       },
@@ -50,7 +51,29 @@ export const Signed = createStackNavigator({
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
             source={require("../menu_p.png")}
-            style={{ marginLeft: 15, height: 30, width: 30 }}
+            style={{
+              marginLeft: 15,
+              height: 30,
+              width: 30,
+              tintColor: "black"
+            }}
+          />
+        </TouchableOpacity>
+      ),
+      headerRight: (
+        <TouchableOpacity
+          style={{ marginRight: 20, marginBottom: 10 }}
+          onPress={() => navigation.toggleDrawer()}
+        >
+          <SvgUri
+            width="50"
+            height="50"
+            source={{
+              uri:
+                "https://avatars.dicebear.com/v2/male/" +
+                navigation.getParam("main_title") +
+                ".svg"
+            }}
           />
         </TouchableOpacity>
       )
@@ -59,6 +82,7 @@ export const Signed = createStackNavigator({
   Chat: { screen: Chat }
 });
 
+// utilisateur deconnecté
 export const SignedOut = createBottomTabNavigator(
   {
     SignIn: {
@@ -98,22 +122,7 @@ SignedOut.navigationOptions = ({ navigation }) => {
   };
 };
 
-/*
-export const SignedOut = createStackNavigator({
-  SignUp: {
-    screen: SignUp,
-    navigationOptions: {
-      title: "Sign Up"
-    }
-  },
-  SignIn: {
-    screen: SignIn,
-    navigationOptions: {
-      title: "Sign In"
-    }
-  }
-});
-*/
+// drawer menu custom
 const customNavigator = props => {
   return (
     <Container>
@@ -124,7 +133,9 @@ const customNavigator = props => {
           justifyContent: "center",
           alignItems: "center",
 
-          backgroundColor: "white"
+          backgroundColor: "black",
+          borderBottomColor: "white",
+          borderBottomWidth: 1
         }}
       >
         <Body
@@ -133,26 +144,35 @@ const customNavigator = props => {
             justifyContent: "center",
             alignItems: "center",
 
-            backgroundColor: "white"
+            backgroundColor: "black"
           }}
         >
           <Image
             style={{
-              width: 200,
-              height: 50
+              width: 60,
+              height: 60
             }}
-            source={require("../dashChat.png")}
+            source={require("../messenger.png")}
           />
-          <Text />
+          <View
+            style={{
+              borderBottomColor: "white",
+              borderBottomWidth: 1
+            }}
+          />
+          <Text style={{ color: "white", fontSize: 25, fontWeight: "bold" }}>
+            Dash Chat
+          </Text>
         </Body>
       </Header>
-      <Content>
+      <Content style={{ backgroundColor: "black" }}>
         <DrawerItems {...props} />
       </Content>
     </Container>
   );
 };
 
+// stack global
 export const createRootNavigator = (signedIn = false) => {
   return createSwitchNavigator(
     {
@@ -172,6 +192,7 @@ export const createRootNavigator = (signedIn = false) => {
   );
 };
 
+// drawer menu
 export const DrawerStack = createDrawerNavigator(
   {
     Acceuil: {
@@ -219,36 +240,6 @@ export const DrawerStack = createDrawerNavigator(
   }
 );
 
-// export const DrawerNavigation = createStackNavigator(
-//   {
-//     DrawerStack: { screen: DrawerStack }
-//   },
-//   {
-//     headerMode: "float",
-//     navigationOptions: ({ navigation }) => ({
-//       headerStyle: { backgroundColor: "green" },
-//       title: "Logged In to your app!",
-//       headerLeft: (
-//         <Text onPress={() => navigation.navigate("DrawerOpen")}>Menu</Text>
-//       )
-//     })
-//   }
-// );
-
-// Export it as the root component
-
-/*
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
-    );
-  }
-}
-*/
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -268,5 +259,3 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   }
 });
-
-// mapper pour avoir le isAuthenticated

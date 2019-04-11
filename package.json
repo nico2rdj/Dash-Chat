@@ -8,11 +8,16 @@
   },
   "dependencies": {
     "expo": "^32.0.0",
+    "expo-svg-uri": "^1.0.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-emoji-selector": "^0.1.7"
   },
   "devDependencies": {
+    "@dicebear/avatars": "^3.0.6",
+    "@dicebear/avatars-avataaars-sprites": "^1.0.9",
+    "@dicebear/avatars-gridy-sprites": "^1.0.11",
+    "@dicebear/avatars-male-sprites": "^2.0.6",
     "babel-preset-expo": "^5.0.0",
     "emoji-mart": "^2.11.0",
     "firebase": "^5.8.5",

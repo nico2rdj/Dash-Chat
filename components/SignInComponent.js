@@ -1,9 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { View, KeyboardAvoidingView, Image, Text } from "react-native";
 import { Card, Button, FormLabel, FormInput } from "react-native-elements";
-import Fire from "../Fire";
 import { connect } from "react-redux";
-import { fetchUser } from "../Store/actions";
 
 class Signin extends React.Component {
   constructor(props) {
@@ -12,55 +10,43 @@ class Signin extends React.Component {
       email: "",
       password: "",
       pseudo: "",
-      user: null,
-      dbPseudo: ""
+      user: null
     };
-    this._toggleFavorite = this._toggleFavorite.bind(this);
-  }
-
-  componentDidMount() {
-    console.log("componentDidUpdate : ");
-    //console.log(this.props);
-    //this.props.fetchUser();
-  }
-
-  componentDidUpdate() {
-    //console.log(this.props);
-    //this.props.fetchUser();
+    this.signInConnexion = this.signInConnexion.bind(this);
   }
 
   componentWillMount() {
-    this.props.navigation.setParams({ main_title: this.props.auth.pseudo });
-    Fire.shared.off();
+    this.props.auth.db.off();
   }
 
-  _toggleFavorite() {
-    Fire.shared.authRef
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
+  signInConnexion() {
+    this.props.auth.db
+      .onLogin(this.state.email, this.state.password)
       .then(user => {
-        Fire.shared.getUser(Fire.shared.uid, user => {
+        this.props.auth.db.getUser(this.props.auth.db.uid, user => {
           this.setState(
             {
               user: user
             },
-
             () => {
+              /* pseudo et user id dans le store */
               const action = {
                 type: "FETCH_USER",
                 value: [
                   JSON.stringify(this.state.user["pseudo"]),
-                  Fire.shared.uid
+                  this.props.auth.db.uid
                 ]
               };
               this.props.dispatch(action);
 
-              let actionC = {};
-              Fire.shared.onChannel(channel => {
-                actionC = {
+              /* channel dans le store */
+              let actionChannel = {};
+              this.props.auth.db.onChannel(channel => {
+                actionChannel = {
                   type: "ADD_CHANNEL",
                   value: channel
                 };
-                this.props.dispatch(actionC);
+                this.props.dispatch(actionChannel);
               });
             }
           );
@@ -79,7 +65,17 @@ class Signin extends React.Component {
 
   render() {
     return (
-      <View style={{ paddingVertical: 20 }}>
+      <View style={{ paddingVertical: 10, backgroundColor: "white" }}>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Image
+            source={require("../messenger.png")}
+            resizeMode="contain"
+            style={{ width: 50, height: 50 }}
+          />
+          <Text style={{ color: "#ff990a", fontSize: 25, fontWeight: "bold" }}>
+            Dash Chat
+          </Text>
+        </View>
         <Card>
           <FormLabel labelStyle={{ fontSize: 18 }}>
             Vous avez un compte
@@ -101,47 +97,67 @@ class Signin extends React.Component {
           />
 
           <Button
-            buttonStyle={{ marginTop: 20 }}
-            backgroundColor="#03A9F4"
+            buttonStyle={{ marginTop: 10 }}
+            backgroundColor="#ff990a"
             title="CONNEXION"
             onPress={() => {
-              this._toggleFavorite();
-
-              // .then(() => { navigation.navigate("SignedIn"); });
+              this.signInConnexion();
             }}
           />
         </Card>
+
         <View style={{ justifyContent: "center" }}>
           <Card>
-            <FormLabel>Continuer en mode anonyme</FormLabel>
-            <FormInput
-              placeholder="Votre pseudo"
-              onChangeText={text => {
-                this.setState({ pseudo: text });
-              }}
-            />
+            <FormLabel labelStyle={{ fontSize: 18 }}>
+              Continuer en mode anonyme
+            </FormLabel>
+            <KeyboardAvoidingView
+              keyboardVerticalOffset="50"
+              behavior="padding"
+              enabled
+            >
+              <FormInput
+                placeholder="Votre pseudo"
+                onChangeText={text => {
+                  this.setState({ pseudo: text });
+                }}
+              />
+            </KeyboardAvoidingView>
             <Button
               buttonStyle={{ marginTop: 20 }}
-              backgroundColor="black"
+              backgroundColor="#03A9F4"
               title="ANONYME"
               onPress={() => {
-                Fire.shared.authRef.signInAnonymously().then(user => {
+                this.props.auth.db.authRef.signInAnonymously().then(user => {
+                  /* user dans le store */
                   const action = {
                     type: "FETCH_USER",
-                    value: "Fire.shared.isConnected"
+                    value: [
+                      JSON.stringify(this.state.pseudo),
+                      this.props.auth.db.uid
+                    ]
                   };
                   this.props.dispatch(action);
-                  console.log("success");
+
+                  /* channel dans le store */
+                  let actionChannel = {};
+                  this.props.auth.db.onChannel(channel => {
+                    actionChannel = {
+                      type: "ADD_CHANNEL",
+                      value: channel
+                    };
+                    this.props.dispatch(actionChannel);
+                  });
+
                   const newUser = {
                     pseudo: this.state.pseudo
                   };
-                  Fire.shared.refUser.push(newUser);
+                  this.props.auth.db.refUser.push(newUser);
 
-                  this.props.navigation.navigate("SignedIn");
+                  this.props.navigation.navigate("Main", {
+                    main_title: this.state.pseudo
+                  });
                 });
-                console.log("haha");
-
-                // .then(() => { navigation.navigate("SignedIn"); });
               }}
             />
           </Card>
