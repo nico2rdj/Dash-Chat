@@ -66,20 +66,6 @@ class Fire {
     return Fire.shared.authRef.signInWithEmailAndPassword(email, password);
   };
 
-  /*
-  onAnonymously = pseudo => {
-    firebase
-      .auth()
-      .signInAnonymously()
-      .then(user => {
-        const user = {
-          pseudo: pseudo
-        };
-        this.refUser.push(user);
-      });
-  };
-*/
-
   get ref() {
     return firebase.database().ref("channel");
   }

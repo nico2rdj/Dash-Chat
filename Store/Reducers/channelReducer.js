@@ -1,5 +1,5 @@
-import { FETCH_CHANNELS, ADD_CHANNEL } from "../actions/types";
-import Fire from "../../Fire";
+import { FETCH_CHANNELS, ADD_CHANNEL, REMOVE_CHANNELS } from "../actions/types";
+import Fire from "../../DataSource/Fire";
 
 const initialState = {
   channels: []
@@ -21,6 +21,12 @@ export default (state = initialState, action) => {
       return nextState || state;
     case ADD_CHANNEL:
       return { ...state, channels: state.channels.concat(action.value) };
+    case REMOVE_CHANNELS:
+      nextState = {
+        ...state,
+        channels: []
+      };
+      return nextState || state;
 
     default:
       return state;

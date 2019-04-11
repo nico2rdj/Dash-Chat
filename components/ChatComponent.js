@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import { connect } from "react-redux";
-import Composer from "./Composer";
 import SvgUri from "expo-svg-uri";
 
 class Chat extends React.Component {
@@ -97,34 +96,6 @@ class Chat extends React.Component {
     };
   }
 
-  // tinput = () => {
-  //   return (
-  //     <View>
-  //       <TouchableOpacity activeOpacity={0.6} />
-  //       <TextInput
-  //         placeholder="wassup"
-  //         returnKeyType={"send"}
-  //         onChangeText={text => this.setState({ test: text })}
-  //         value={this.state.text}
-  //         blurOnSubmit={false}
-  //         ref={"chatInputRef"}
-  //       />
-  //       <Button
-  //         style={{ fontSize: 20, color: "green" }}
-  //         styleDisabled={{ color: "red" }}
-  //         onPress={() => this.props.onSend}
-  //         title="Envoyer"
-  //       >
-  //         Press Me
-  //       </Button>
-  //     </View>
-  //   );
-  // };
-
-  tinput = props => {
-    return <Composer {...props} />;
-  };
-
   renderInputToolbar = props => {
     // Here you will return your custom InputToolbar.js file you copied before and include with your stylings, edits.
 
@@ -174,10 +145,13 @@ class Chat extends React.Component {
           }
           user={this.user}
           placeholder="Taper votre message"
-          renderInputToolbar={this.renderInputToolbar}
           showAvatarForEveryMessage={true}
-          renderAvatar={() => (
-            <SvgUri source={{ uri: this.user.avatar }} width={24} height={24} />
+          renderAvatar={item => (
+            <SvgUri
+              source={{ uri: item.currentMessage.user.avatar }}
+              width={24}
+              height={24}
+            />
           )}
         />
         <KeyboardAvoidingView

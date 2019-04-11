@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Alert, Button, Image } from "react-native";
+import {
+  View,
+  Alert,
+  Button,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView
+} from "react-native";
 import { Card, FormLabel, FormInput } from "react-native-elements";
 import { connect } from "react-redux";
 import Avatars from "@dicebear/avatars";

@@ -50,7 +50,7 @@ export const Signed = createStackNavigator({
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Image
-            source={require("../menu_p.png")}
+            source={require("../assets/menu_p.png")}
             style={{
               marginLeft: 15,
               height: 30,
@@ -152,7 +152,7 @@ const customNavigator = props => {
               width: 60,
               height: 60
             }}
-            source={require("../messenger.png")}
+            source={require("../assets/messenger.png")}
           />
           <View
             style={{
@@ -205,7 +205,7 @@ export const DrawerStack = createDrawerNavigator(
         drawerLabel: "Acceuil",
         drawerIcon: () => (
           <Image
-            source={require("../home.png")}
+            source={require("../assets/home.png")}
             resizeMode="contain"
             style={{ width: 20, height: 20 }}
           />
@@ -223,7 +223,7 @@ export const DrawerStack = createDrawerNavigator(
         drawerLabel: "Deconnexion",
         drawerIcon: () => (
           <Image
-            source={require("../logout.png")}
+            source={require("../assets/logout.png")}
             resizeMode="contain"
             style={{ width: 20, height: 20 }}
           />

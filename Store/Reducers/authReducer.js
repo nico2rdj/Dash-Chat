@@ -1,5 +1,5 @@
-import { FETCH_USER } from "../actions/types";
-import Fire from "../../Fire";
+import { FETCH_USER, LOGOUT } from "../actions/types";
+import Fire from "../../DataSource/Fire";
 
 const initialState = {
   isAuthenticated: false,
@@ -20,6 +20,14 @@ export default (state = initialState, action) => {
           userId: action.value[1]
         };
       }
+      return nextState || state;
+    case LOGOUT:
+      nextState = {
+        ...state,
+        isAuthenticated: false,
+        pseudo: "",
+        userId: ""
+      };
       return nextState || state;
 
     default:

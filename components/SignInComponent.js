@@ -17,6 +17,16 @@ class Signin extends React.Component {
 
   componentWillMount() {
     this.props.auth.db.off();
+    const actionLogout = {
+      type: "LOGOUT",
+      value: null
+    };
+    this.props.dispatch(actionLogout);
+    const actionRemoveChannel = {
+      type: "REMOVE_CHANNELS",
+      value: null
+    };
+    this.props.dispatch(actionRemoveChannel);
   }
 
   signInConnexion() {
@@ -68,7 +78,7 @@ class Signin extends React.Component {
       <View style={{ paddingVertical: 10, backgroundColor: "white" }}>
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Image
-            source={require("../messenger.png")}
+            source={require("../assets/messenger.png")}
             resizeMode="contain"
             style={{ width: 50, height: 50 }}
           />
@@ -111,18 +121,13 @@ class Signin extends React.Component {
             <FormLabel labelStyle={{ fontSize: 18 }}>
               Continuer en mode anonyme
             </FormLabel>
-            <KeyboardAvoidingView
-              keyboardVerticalOffset="50"
-              behavior="padding"
-              enabled
-            >
-              <FormInput
-                placeholder="Votre pseudo"
-                onChangeText={text => {
-                  this.setState({ pseudo: text });
-                }}
-              />
-            </KeyboardAvoidingView>
+
+            <FormInput
+              placeholder="Votre pseudo"
+              onChangeText={text => {
+                this.setState({ pseudo: text });
+              }}
+            />
             <Button
               buttonStyle={{ marginTop: 20 }}
               backgroundColor="#03A9F4"
